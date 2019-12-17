@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container" style='width: 90%;'>
+		<div class="navbar-header" >
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li>
+                        <a href="{% url 'blog:blog_title' %}">
+                            <span style="margin-left:10px" class="glyphicon glyphicon-home"></span> HOME
+                        </a>
+                    </li>
+				{% for column in columns %}
+				<li>
+					<a href="/blog/article_column/{{ column.id }}">{{ column.column }}</a>
+				</li>
+				{% empty %}
+				{% endfor %}
+			</ul>
+			
+			{% if request.user.is_authenticated %}
+				<ul class="nav navbar-nav navbar-right" style="margin-right:10px">
+					{% if user.is_authenticated %}
+					<li><a href="#">{{ user.username }}</a> </li>
+					<li><a href="{% url 'account:user_logout' %}">注销</a> </li>
+					{% else %}
+					<li>
+						<a href="{% url 'account:user_login' %}">登录</a>
+					</li>
+					{% endif %}
+					<li>
+						<a name="add-article" href="{% url 'blog:article_post' %}">
+							<span style="margin-left:10px" class="glyphicon glyphicon-plus"></span>新增博文
+						</a>
+					</li>
+				</ul>
+			{% endif %}
+		</div>
+
+    </div>
+</nav>
+
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script type="text/javascript" src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>

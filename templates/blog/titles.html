@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block title %}
+Fly妃
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <hr align="left" width="0" size="5" color="#808080">
+
+    <div class="col-xs-12 col-md-8">
+        {% if blogs %}
+            <ul>
+                {% for blog in blogs %}
+                <div class="well well-sm">
+                    <h4><a href="/blog/detail/{{ blog.id }}">{{ blog.title }}</a></h4>
+                    <div style="margin-top:10px">
+                        <a href="{% url 'blog:article_author' blog.author.username %}">
+                            <span style="margin-left:10px" class="glyphicon glyphicon-user"></span>
+                            <span class="label label-default">{{ blog.author }}</span>
+                        </a>
+                        <a href="/blog/article_column/{{ blog.article_column_id }}">
+                            <span style="margin-left:10px" class="glyphicon glyphicon-tag"></span>
+                            <span class="label label-primary" >{{ blog.column }}</span>
+                        </a>
+                        <span>
+                            <span style="margin-left:10px" class="glyphicon glyphicon-time"></span>
+                            {{ blog.updated }}
+                        </span>
+
+                        {% if request.user.is_authenticated %}
+                            {% ifequal request.user.username blog.author.username %}
+                                <a name="redit-article" href="{% url 'blog:article_redit' blog.id %}">
+                                    <span style="margin-left:25px" class="glyphicon glyphicon-edit"></span>编辑
+                                </a>
+
+                                <a name="delete" href="javascript:" onclick="del_article(this, {{ blog.id }})">
+                                    <span style="margin-left:10px" class="glyphicon glyphicon-trash"></span>删除
+                                </a>
+                            {% endifequal %}
+                        {% endif %}
+                    </div>
+                    <div class="well" style="margin-top:20px;height:300px; overflow-y :auto; verflow-x :hidden; white-space: wrap;">
+                            {{ blog.body | safe }}
+                    </div>
+
+                    <div style="margin-top:5px">
+                        <span>
+                            <span style="margin-left:10px" class="glyphicon glyphicon-eye-open"></span>
+                                浏览(
+                            {% for view in views %}
+                                {% ifequal blog.id view.id %}
+                                    {{ view.views }}
+                                {% endifequal %}
+                            {% endfor %}
+                            )
+                            </a>
+                        </span>
+                        <span>
+                            <span style="margin-left:10px" class="glyphicon glyphicon-comment"></span>
+                                评论(
+                           {{ blog.comments.count }}
+                            )
+                            </a>
+                        </span>
+                        <span>
+                            <span style="margin-left:10px"><a class="btn btn-primary" href="/blog/detail/{{ blog.id }}" role="button">查看更多</a></span>
+                        </span>
+                    </div>
+                </div>
+                <hr align="left" width="0" size="5" color="#808080">
+                {% empty %}
+
+                {% endfor %}
+            </ul>
+            {% include "blog/paginator.html" %}
+        {% else %}
+            <p>
+                博主太忙了，还没有博文
+                <span style="margin-left:10px" class="glyphicon glyphicon-tint"></span>
+            </p>
+        {% endif %}
+    </div>
+    <hr align="left" width="0" size="5" color="#808080">
+    <!--div class="row-xs-12 row-md-3"-->
+    {% include "blog/article_hit.html" %}
+    <!--{% include "adposition_right.html" %}-->
+    <!--{% include "adposition_footer.html" %}-->
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/layer.js' %}"></script>
+<script type="text/javascript">
+    function del_article(the, article_id){
+        var article_name = $(the).parents("div").children("h4").text();
+        layer.open({
+            type: 1,
+            skin: "layui-layer-rim",
+            area: ["400px", "200px"],
+            content: "<div class='text-center' style='margin-top:20px'> <p>是否确定删除 【" + article_name + "】</p></div>",
+            btn: ['确定','取消'],
+            yes: function(){
+                $.ajax({
+                    url: '{% url "blog:article_del" %}',
+                    type: "POST",
+                    data: {"article_id": article_id},
+                    success: function(e){
+                        if(e=="1"){
+                            parent.location.reload();
+                            layer.msg("删除成功");
+                        }
+                        else{
+                            layer.msg("删除失败");
+                        }
+                    },
+                })
+            },
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(function(){
+        editormd.markdownToHTML("editormd-view", {
+            htmlDecode : "style,script,iframe",
+            emoji: true,
+            taskList: true,
+            tex: true,
+            flowChart: true,
+            sequenceDiagram: true,
+        });
+    });
+</script
+{% endblock %}

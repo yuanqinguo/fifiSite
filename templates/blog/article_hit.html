@@ -1,0 +1,42 @@
+<div class="col-md-3">
+    <p class="text-center"><h3>最新文章</h3></p>
+    <ul>
+        {% for blog in latest_articles %}
+            <li>
+                <a href="/blog/detail/{{ blog.id }}">{{ blog.title }}</a>
+            </li>
+        {% empty %}
+            暂无最新文章
+        {% endfor %}
+    </ul>
+</div>
+<div class="col-md-3">
+    <hr align="left" size="10" color="#808080">
+    <p class="text-center"><h3>热门文章</h3></p>
+    <ul>
+        {% for blog in most_views %}
+            <li>
+                <a href="/blog/detail/{{ blog.id }}">{{ blog.title }}</a>
+            </li>
+        {% empty %}
+            <li>
+                暂无热门文章
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="col-md-3">
+    <hr align="left" size="10" color="#808080">
+    <p class="text-center"><h3>热评文章</h3></p>
+    <ul>
+        {% for blog in most_comments %}
+            <li>
+                <a href="/blog/detail/{{ blog.id }}">{{ blog.title }}</a>
+            </li>
+        {% empty %}
+            <li>
+                暂无热评文章
+            </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,60 @@
+{% load staticfiles %}
+
+<div id="article_comment">
+    <div style="margin-top:5px" class="well">
+        <h4 style="margin-top:0px">
+            <span class="glyphicon glyphicon-bullhorn"></span>本文有{{ article.comments.count }}评论
+        </h4>
+        {% for comment in article.comments.all %}
+        <div style="margin-top:20px" class="well well-sm">
+            <span class="glyphicon glyphicon-user">
+                <span class="label label-default">{{ comment.name }}</span>
+                <span class="label label-info">#{{ forloop.revcounter }}</span>
+            </span>
+            <p class="date">{{ comment.created }}</p>
+            <div class="well">
+            <p style="margin-left:10px">{{comment.body}}</p></div>
+
+        </div>
+        {% empty %}
+        <p>暂没有评论</p>
+        {% endfor %}
+    </div>
+    <div style="margin-top:10px" class="well">
+        <h4>
+            <span class="glyphicon glyphicon-send"></span>欢迎拍砖
+        </h4>
+
+        <form action="." method="POST" class="form-horizontal" role="form">{% csrf_token %}
+            <div class="form-group">
+                <label for="inputcomment" class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-10">
+                    {{ comment_form.name }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputcomment" class="col-sm-2 control-label">邮箱</label>
+                <div class="col-sm-10">
+                    {{ comment_form.email }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputcomment" class="col-sm-2 control-label">评论</label>
+                <div class="col-sm-10">
+                    {{ comment_form.body }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <p><input type="submit" name="", value="发表评论" class="btn btn-primary" onclick="doreload()"></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script type="text/javascript">
+    function doreload(){
+        parent.location.reload();
+    }
+</script>
